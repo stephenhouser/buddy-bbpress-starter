@@ -1,7 +1,7 @@
 FROM php:7.0-apache
 ENV TERM=xterm
-LABEL maintainer="Derek P Sifford <dereksifford@gmail.com>" \
-      version="0.15.2-php7.0"
+LABEL maintainer="Stephen Houser <stephenhouser@gmail.com>" \
+      version="0.1-php7.0"
 
 # Install base requirements & sensible defaults + required PHP extensions
 RUN echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/sources.list \
@@ -39,14 +39,21 @@ RUN echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/so
     } > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
 # Install wp-cli, configure apache, add scripts, create install directory & symlink
+COPY run.sh /run.sh
+#RUN curl -s -o /run.sh https://raw.githubusercontent.com/stephenhouser/buddy-bbpress-starter/master/run.sh
+RUN chmod +x /run.sh
+
 RUN curl -s \
         -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
-        -o /run.sh https://raw.githubusercontent.com/visiblevc/wordpress-starter/master/run.sh \
-    && chmod +x /usr/local/bin/wp /run.sh \
-    && curl -s \
+    && chmod +x /usr/local/bin/wp
+
+RUN wp --allow-root package install wp-cli/wp-super-cache-cli
+
+RUN curl -s \
         https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash | \
-        sed -e "s/wp cli completions/wp cli completions --allow-root/" > /etc/bash_completion.d/wp-cli \
-    && sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf \
+        sed -e "s/wp cli completions/wp cli completions --allow-root/" > /etc/bash_completion.d/wp-cli
+
+RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf \
     && echo "ServerName localhost" | tee /etc/apache2/conf-available/fqdn.conf && a2enconf fqdn \
     && a2enmod rewrite expires \
     && service apache2 restart \
