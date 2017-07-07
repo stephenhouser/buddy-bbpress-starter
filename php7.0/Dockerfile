@@ -39,9 +39,6 @@ RUN echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/so
     } > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
 # Install wp-cli, configure apache, add scripts, create install directory & symlink
-COPY run.sh /run.sh
-#RUN curl -s -o /run.sh https://raw.githubusercontent.com/stephenhouser/buddy-bbpress-starter/master/run.sh
-RUN chmod +x /run.sh
 
 RUN curl -s \
         -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
@@ -60,6 +57,13 @@ RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf 
     && mkdir -p /app ~/.wp-cli \
     && rm -fr /var/www/html \
     && ln -s /app /var/www/html
+
+# Install the `run.sh` startup script
+COPY run.sh /run.sh
+# This line will pull the run.sh live from GitHub.
+# (I don't really like that feature though, so it's disabled here)
+#RUN curl -s -o /run.sh https://raw.githubusercontent.com/stephenhouser/buddy-bbpress-starter/master/run.sh
+RUN chmod +x /run.sh
 
 WORKDIR /app
 EXPOSE 80 443
