@@ -59,7 +59,10 @@ RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf 
     && rm -fr /var/www/html \
     && ln -s /app /var/www/html
 
-# Copy cached versions of WP, plugins, and themes
+# Copy cached versions of WP, plugins, and themes.
+# This is so we can start up when other things are offline.
+# For this image, just WordPress, BuddyPress, and bbPress are in the cache.
+# (Well, you have to download them there that is)
 COPY cache /root/.wp-cli/cache
 
 # Install the `run.sh` startup script
