@@ -1,3 +1,8 @@
+# Cached plugins and wp core
+php5.6/cache
+php7.0/cache
+php7.1/cache
+
 # File system junk files
 Desktop.ini
 Thumbs.db
@@ -7,17 +12,3 @@ Thumbs.db
 .Trashes
 .apdisk
 .fseventsd
-
-# Editor files
-*.sublime-*
-*.swp
-.c9
-.sass-cache/
-
-# Wordpress
-wp-content/*
-
-# WordPress Starter Dev Files
-/Dockerfile
-/docker-compose.yml
-test.sh
