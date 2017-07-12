@@ -16,6 +16,7 @@ RUN echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/so
         sudo \
         vim \
         zip \
+        wget \
     && DEBIAN_FRONTEND=noninteractive apt-get -t jessie-backports install -y \
         python-certbot-apache \
     && rm -rf /var/lib/apt/lists/* \
@@ -57,6 +58,9 @@ RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf 
     && mkdir -p /app ~/.wp-cli \
     && rm -fr /var/www/html \
     && ln -s /app /var/www/html
+
+# Copy cached versions of WP, plugins, and themes
+COPY cache /root/.wp-cli/cache
 
 # Install the `run.sh` startup script
 COPY run.sh /run.sh
